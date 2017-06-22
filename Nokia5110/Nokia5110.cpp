@@ -176,9 +176,13 @@ void Nokia5110::SetDisplayDirection(NOKIA_DISPLAY_DIRECTION dir)
 	  sendCommand(currentControlPad.enableFunctions);
 }
 
-NOKIA_DISPLAY_DIRECTION Nokia5110::GetDisplayDirection() const {
+NOKIA_DISPLAY_DIRECTION Nokia5110::GetDisplayDirection() const
+{
 
+	return (bitRead(currentControlPad.enableFunctions,1)==1)?VIRTICAL:HORIZONTAL;
 }
+
+
 void Nokia5110::SetInstructSet(NOKIA_INSTRUCT_SET is)
 {
 	  if(is==EXTENT_INSTRUCT)
@@ -191,6 +195,12 @@ void Nokia5110::SetInstructSet(NOKIA_INSTRUCT_SET is)
 	  }
 	  sendCommand(currentControlPad.enableFunctions);
 }
+
+NOKIA_INSTRUCT_SET Nokia5110::GetInstructSet()const
+{
+	return (bitRead(currentControlPad.enableFunctions,0)==1)?EXTENT_INSTRUCT:BASE_INSTRUCT;
+}
+
 
 void Nokia5110::draw(unsigned char x,unsigned char y,unsigned char data)
 {
