@@ -239,6 +239,12 @@ void Nokia5110::drawDot(unsigned char x, unsigned char y,
   draw (x, bytes, data);
 }
 
+unsigned char * Nokia5110::GetCurrentOfByte() const
+{
+  return m_buffer + currentControlPad.row * MAX_COLUMN
+      + currentControlPad.column;
+}
+
 void Nokia5110::Refresh(unsigned char x, unsigned char y, unsigned char width,
 		    unsigned char high)
 {

@@ -104,6 +104,8 @@ public:
 	NOKIA_INSTRUCT_SET GetInstructSet() const;
 	void drawDot(unsigned char x, unsigned char y,
 			NOKIA_DISPLAY_WRITE_MODE mode);
+  unsigned char *
+  GetCurrentOfByte () const;
 	void Refresh(unsigned char x = 0, unsigned char y = 0, unsigned char width =
 			MAX_COLUMN, unsigned char high = MAX_ROW);
   ~Nokia5110 ();
