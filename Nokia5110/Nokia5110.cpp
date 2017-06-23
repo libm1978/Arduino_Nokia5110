@@ -76,25 +76,27 @@ void Nokia5110::Reset()
 	digitalWrite(m_reset, HIGH);
 }
 
-void Nokia5110::setColumn(unsigned char colPos)
+void
+Nokia5110::setColumn (unsigned char x)
 {
-	if (colPos > 83)
+  if (x > 83)
 	  {
-		colPos = colPos % 84;
+      x = x % 84;
 	  }
 	currentControlPad.column = 0x80;
-	currentControlPad.column |= colPos;
+  currentControlPad.column |= x;
 	sendCommand(currentControlPad.column);
 }
 
-void Nokia5110::setRow(unsigned char rowPos)
+void
+Nokia5110::setRow (unsigned char y)
 {
-	if (rowPos > 5)
+  if (y > (MAX_ROW * 8))
 	  {
-		rowPos = rowPos % 6;
+      y = y % MAX_ROW;
 	  }
 	currentControlPad.row = 0x40;
-	currentControlPad.row |= rowPos;
+  currentControlPad.row |= y;
 	sendCommand(currentControlPad.row);
 }
 
@@ -240,8 +242,20 @@ void Nokia5110::drawDot(unsigned char x, unsigned char y,
 void Nokia5110::Refresh(unsigned char x, unsigned char y, unsigned char width,
 		    unsigned char high)
 {
-
+  if (GetDisplayDirection () == HORIZONTAL)
+    {
+      m_pCurrentOfBuffer = m_buffer + y * MAX_COLUMN + x;
+      for (unsigned char row = 0; row < high; row++)
+	{
+	  for (unsigned char column = 0; column < width; column++)
+	    {
+	      m_pCurrentOfBuffer = m_buffer + row * MAX_COLUMN + column;
+	      sendData (*m_pCurrentOfBuffer);
+	    }
+	}
+    }
 }
+
 Nokia5110::~Nokia5110 ()
 {
   delete[] m_buffer;

@@ -56,14 +56,14 @@ class Nokia5110
 {
 private:
 
-	typedef struct
-	{
-	  Nokia_SPI_Settings spiSettings;
-	  unsigned char enableFunctions;
-	  unsigned char displayMode;
-		unsigned char column;
-		unsigned char row;
-	}Nokia5110_ControlPad;
+  typedef struct
+  {
+    Nokia_SPI_Settings spiSettings;
+    unsigned char enableFunctions;
+    unsigned char displayMode;
+    unsigned char column;
+    unsigned char row;
+  } Nokia5110_ControlPad;
 
 	static const unsigned char MAX_COLUMN = 84;
 	static const unsigned char MAX_ROW = 6;
@@ -84,8 +84,10 @@ private:
 	void controlPad_Init();
 	void sendCommand(unsigned char cmd);
 	void sendData(unsigned char data);
-	void setColumn(unsigned char colPos);
-	void setRow(unsigned char rowPos);
+  void
+  setColumn (unsigned char x);
+  void
+  setRow (unsigned char y);
 	void draw(unsigned char row, unsigned char column, unsigned char data);
 public:
 	Nokia5110(unsigned char resetPin,unsigned char dcPin,unsigned char sclkPin,unsigned char mosiPin,unsigned char ssPin,unsigned char ledPin);
