@@ -2,6 +2,15 @@
 #include <SPI.h>
 #include "Nokia5110.h"
 
+//功能：Nokia5110对象的构造函数
+//参数:
+//restPin:复位引脚
+//dcPin:命令或者数据操作引脚
+//sclkPin:SPI接口的时钟SCLK引脚
+//mosiPin:SPI接口的主机输出MOSI引脚
+//ssPin:SPI接口的从机使能SS引脚
+//ledPin:Nokia5110背光LED控制引脚
+//返回值：无
 Nokia5110::Nokia5110(unsigned char restPin,unsigned char dcPin,unsigned char sclkPin,unsigned char mosiPin,
 		unsigned char ssPin,unsigned char ledPin)
 {
@@ -19,6 +28,10 @@ Nokia5110::Nokia5110(unsigned char restPin,unsigned char dcPin,unsigned char scl
 	m_pCurrentOfBuffer = m_buffer;
 }
 
+//功能：初始化使用构造函数指定的Arduino引脚
+//参数：无
+//返回值：无
+//备注：类的私有方法
 void Nokia5110::pin_Init()
 {
 	pinMode(m_reset,OUTPUT);
@@ -32,11 +45,20 @@ void Nokia5110::pin_Init()
 	digitalWrite(m_led,HIGH);
 }
 
+
+//功能：对SPI接口使用缺省值进行初始化
+//参数：无
+//返回值：无
+//备注：类的私有方法
 void Nokia5110::spi_Init()
 {
 	SPI.beginTransaction(SPISettings(currentControlPad.spiSettings.speed,currentControlPad.spiSettings.bitOrder,currentControlPad.spiSettings.dataMode));
 }
 
+//功能：初始化Nokia5110模块的控制寄存器的类内缓存
+//参数：无
+//返回值：无
+//备注：类的私有方法
 void Nokia5110::controlPad_Init()
 {
 	currentControlPad.spiSettings.speed = 1000;
@@ -48,6 +70,11 @@ void Nokia5110::controlPad_Init()
 	currentControlPad.row = 0x40;
 }
 
+//功能：向Nokia5110模块发送指定的命令
+//参数：
+//cmd：向Nokia5110模块发送的命令，类型unsigned char
+//返回值：无
+//备注：类的私有方法
 void Nokia5110::sendCommand(unsigned char cmd)
 {
 	  digitalWrite(m_dc,LOW);
@@ -59,6 +86,11 @@ void Nokia5110::sendCommand(unsigned char cmd)
 	  SPI.end();
 }
 
+//功能：向Nokia5110模块当前位置发送显示数据
+//参数：
+//data：向Nokia5110模块发送的显示数据，类型：unsigned char
+//返回值：无
+//备注：类的私有方法
 void Nokia5110::sendData(unsigned char data)
 {
 	  digitalWrite(m_dc,HIGH);
@@ -69,6 +101,10 @@ void Nokia5110::sendData(unsigned char data)
 	  SPI.end();
 }
 
+
+//功能：对Nokia5110模块进行复位
+//参数：无
+//返回值：无
 void Nokia5110::Reset()
 {
 	digitalWrite(m_reset, LOW);
@@ -76,8 +112,11 @@ void Nokia5110::Reset()
 	digitalWrite(m_reset, HIGH);
 }
 
-void
-Nokia5110::setColumn (unsigned char x)
+//功能：根据用户指定的X坐标改变Nokia5110的当前column
+//参数：
+//x：用户指定的X坐标，类型：unsigned char
+//返回值：无
+void Nokia5110::setColumn (unsigned char x)
 {
   if (x > 83)
 	  {
@@ -88,8 +127,11 @@ Nokia5110::setColumn (unsigned char x)
 	sendCommand(currentControlPad.column);
 }
 
-void
-Nokia5110::setRow (unsigned char y)
+//功能：根据用户指定的Y坐标改变Nokia5110的当前ROW
+//参数：
+//y：用户指定的Y坐标
+//返回值：无
+void Nokia5110::setRow (unsigned char y)
 {
   if (y > (MAX_ROW * 8))
 	  {
@@ -100,6 +142,10 @@ Nokia5110::setRow (unsigned char y)
 	sendCommand(currentControlPad.row);
 }
 
+//功能：设置Nokia5110的工作模式
+//参数：
+//s：指定的Nokia5110的状态，类型：NOKIA_SWITCH_STAT
+//返回值：无
 void Nokia5110::SetAvaliable(NOKIA_SWITCH_STAT s)
 {
 	  if(s==OFF)
@@ -265,4 +311,15 @@ void Nokia5110::Refresh(unsigned char x, unsigned char y, unsigned char width,
 Nokia5110::~Nokia5110 ()
 {
   delete[] m_buffer;
+}
+
+void Nokia5110::OnLED()
+{
+	digitalWrite(m_led,LOW);
+}
+
+
+void Nokia5110::OffLED()
+{
+	digitalWrite(m_led,HIGH);
 }
