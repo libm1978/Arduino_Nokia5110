@@ -237,6 +237,11 @@ void Nokia5110::drawDot(unsigned char x, unsigned char y,
   draw (x, bytes, data);
 }
 
+void Nokia5110::Refresh(unsigned char x, unsigned char y, unsigned char width,
+		    unsigned char high)
+{
+
+}
 Nokia5110::~Nokia5110 ()
 {
   delete[] m_buffer;
