@@ -159,10 +159,17 @@ void Nokia5110::SetAvaliable(NOKIA_SWITCH_STAT s)
 	  sendCommand(currentControlPad.enableFunctions);
 }
 
+//功能：获取Nokia5110的工作模式
+//参数：无
+//返回值：NOKIA_SWITCH_STAT类型，返回ON表示Nokia5110处于正常的工作状态，返回OFF表示Nokia5110处于掉电模式
 NOKIA_SWITCH_STAT Nokia5110::GetAvaliable() const {
 	return (bitRead(currentControlPad.enableFunctions, 2)) == 0 ? ON : OFF;
 }
 
+//功能：设置Nokia5110的显示模式
+//参数：
+//dm：NOKIA_DISPLAY_MODE类型，用户选择的工作模式
+//返回值：无
 void Nokia5110::SetDisplayMode(NOKIA_DISPLAY_MODE dm)
 {
 	  switch(dm)
@@ -191,6 +198,9 @@ void Nokia5110::SetDisplayMode(NOKIA_DISPLAY_MODE dm)
 	  sendCommand(currentControlPad.displayMode);
 }
 
+//功能：获取Nokia5110的显示模式
+//参数：无
+//返回值：NOKIA_DISPLAY_MODE类型，表示Nokia5110当前的显示模式
 NOKIA_DISPLAY_MODE Nokia5110::GetDisplayMode() const {
 	unsigned char mode = currentControlPad.displayMode & 0x05;
 	NOKIA_DISPLAY_MODE retVal;
@@ -211,6 +221,10 @@ NOKIA_DISPLAY_MODE Nokia5110::GetDisplayMode() const {
 	return retVal;
 }
 
+//功能：设置Nokia5110的显示扫描方向
+//参数：
+//dir：NOKIA_DISPLAY_DIRECTION类型，用户指定的显示扫描方向
+//返回值：无
 void Nokia5110::SetDisplayDirection(NOKIA_DISPLAY_DIRECTION dir)
 {
 	  if(dir==VIRTICAL)
@@ -224,13 +238,18 @@ void Nokia5110::SetDisplayDirection(NOKIA_DISPLAY_DIRECTION dir)
 	  sendCommand(currentControlPad.enableFunctions);
 }
 
+//功能：获取Nokia5110的显示扫描方向
+//参数：无
+//返回值：NOKIA_DISPLAY_DIRECTION类型，表示Nokia5110当前的显示扫描方向
 NOKIA_DISPLAY_DIRECTION Nokia5110::GetDisplayDirection() const
 {
 
 	return (bitRead(currentControlPad.enableFunctions,1)==1)?VIRTICAL:HORIZONTAL;
 }
 
-
+//功能：设置Nokia5110的指令集
+//参数：NOKIA_INSTRUCT_SET类型，用户指定的指令集
+//返回值：无
 void Nokia5110::SetInstructSet(NOKIA_INSTRUCT_SET is)
 {
 	  if(is==EXTENT_INSTRUCT)
@@ -244,12 +263,35 @@ void Nokia5110::SetInstructSet(NOKIA_INSTRUCT_SET is)
 	  sendCommand(currentControlPad.enableFunctions);
 }
 
+//功能：获取Nokia5110当前的指令集
+//参数：无
+//返回值：NOKIA_INSTRUCT_SET类型，表示Nokia5110当前的指令集
 NOKIA_INSTRUCT_SET Nokia5110::GetInstructSet()const
 {
 	return (bitRead(currentControlPad.enableFunctions,0)==1)?EXTENT_INSTRUCT:BASE_INSTRUCT;
 }
 
+//功能：Nokia5110对象的析构函数，清除对象占用的资源
+Nokia5110::~Nokia5110 ()
+{
+  delete[] m_buffer;
+}
 
+//功能：打开Nokia5110模块的背光LED
+//参数：无
+//返回值：无
+void Nokia5110::OnLED()
+{
+	digitalWrite(m_led,LOW);
+}
+
+//功能：关闭Nokia5110模块的背光LED
+//参数：无
+//返回值：无
+void Nokia5110::OffLED()
+{
+	digitalWrite(m_led,HIGH);
+}
 void Nokia5110::draw(unsigned char x,unsigned char y,unsigned char data)
 {
 	setColumn(x);
@@ -308,18 +350,3 @@ void Nokia5110::Refresh(unsigned char x, unsigned char y, unsigned char width,
     }
 }
 
-Nokia5110::~Nokia5110 ()
-{
-  delete[] m_buffer;
-}
-
-void Nokia5110::OnLED()
-{
-	digitalWrite(m_led,LOW);
-}
-
-
-void Nokia5110::OffLED()
-{
-	digitalWrite(m_led,HIGH);
-}
