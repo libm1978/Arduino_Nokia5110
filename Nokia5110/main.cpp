@@ -11,17 +11,22 @@ void setup()
 {
 	//led.switchLED();
 	led.Reset();
+	led.OnLED();
 	led.SetAvaliable(ON);
 	led.SetDisplayMode(DISPLAY_NORMAL);
+	led.SetDisplayDirection(VIRTICAL);
+	led.SetInstructSet(BASE_INSTRUCT);
+	led.SetColumn(0);
+	led.SetRow(0);
+	led.Draw(0x55);
+	led.Draw(0x80);
 }
 
 void loop()
 {
-	for (unsigned char i = 0; i < 6; i++) {
-		for (unsigned char j = 0; j < 84; j++) {
-			led.drawDot(i, j, OR);
-		}
-	}
+	led.SetDisplayDirection(HORIZONTAL);
+	led.Draw(3, 42, 0xff);
+	led.Draw(0xff);
 }
 
 

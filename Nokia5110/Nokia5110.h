@@ -105,11 +105,8 @@ private:
 	void controlPad_Init();
 	void sendCommand(unsigned char cmd);
 	void sendData(unsigned char data);
-	void setColumn (unsigned char column);
-	unsigned char getColumn();
-	void setRow (unsigned char row);
-	unsigned char getRow();
-	void draw(unsigned char row, unsigned char column, unsigned char data);
+	void UpdateCurrentRowAndColumn(unsigned char row, unsigned char column);
+
 public:
 	Nokia5110(unsigned char resetPin,unsigned char dcPin,unsigned char sclkPin,unsigned char mosiPin,unsigned char ssPin,unsigned char ledPin);
 	void OnLED();
@@ -123,7 +120,13 @@ public:
 	NOKIA_DISPLAY_DIRECTION GetDisplayDirection() const;
 	void SetInstructSet(NOKIA_INSTRUCT_SET is);
 	NOKIA_INSTRUCT_SET GetInstructSet() const;
-	void drawDot(unsigned char x, unsigned char y,NOKIA_DISPLAY_WRITE_MODE mode);
+	void SetColumn(unsigned char column);
+	unsigned char GetColumn() const;
+	void SetRow(unsigned char row);
+	unsigned char GetRow() const;
+	void Draw(unsigned char data);
+	void Draw(unsigned char row, unsigned char column, unsigned char data);
+	//void drawDot(unsigned char x, unsigned char y,NOKIA_DISPLAY_WRITE_MODE mode);
 	unsigned char * GetCurrentOfByte () const;
 	void Refresh(unsigned char x = 0, unsigned char y = 0, unsigned char width =
 			MAX_COLUMN, unsigned char high = MAX_ROW);

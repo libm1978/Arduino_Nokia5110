@@ -116,7 +116,7 @@ void Nokia5110::Reset()
 //参数：
 //column：用户指定的列，类型：unsigned char
 //返回值：无
-void Nokia5110::setColumn (unsigned char column)
+void Nokia5110::SetColumn(unsigned char column)
 {
   if (column > MAX_COLUMN-1)
 	  {
@@ -130,7 +130,7 @@ void Nokia5110::setColumn (unsigned char column)
 //功能：获取Nokia5110的当前列
 //参数：无
 //返回值：Nokia5110的当前列
-unsigned char Nokia5110::getColumn()
+unsigned char Nokia5110::GetColumn() const
 {
 	return currentControlPad.column&0x7f;
 }
@@ -138,7 +138,7 @@ unsigned char Nokia5110::getColumn()
 //参数：
 //row：用户指定的行
 //返回值：无
-void Nokia5110::setRow (unsigned char row)
+void Nokia5110::SetRow(unsigned char row)
 {
   if (row > (MAX_ROW -1))
 	  {
@@ -152,7 +152,7 @@ void Nokia5110::setRow (unsigned char row)
 //功能：获取Nokia5110的当前行
 //参数：无
 //返回值：Nokia5110的当前行
-unsigned char Nokia5110::getRow()
+unsigned char Nokia5110::GetRow() const
 {
 	return currentControlPad.row&0x3f;
 }
@@ -307,14 +307,65 @@ void Nokia5110::OffLED()
 	digitalWrite(m_led,HIGH);
 }
 
-void Nokia5110::draw(unsigned char row,unsigned char column,unsigned char data)
+//功能：在当前的行列位置写入数据
+//参数：无
+//返回值：无
+void Nokia5110::Draw(unsigned char data)
 {
-	currentControlPad.row=row;
-	currentControlPad.column=column;
-
 	sendData(data);
+	UpdateCurrentRowAndColumn(GetRow(), GetColumn());
 }
 
+//功能：根据输入的行列值和显示数据扫描方向更新当前的行列值
+//参数：
+//row：指定的行
+//column：指定的列
+//返回值：无
+void Nokia5110::UpdateCurrentRowAndColumn(unsigned char row,
+		unsigned char column)
+{
+	if (GetDisplayDirection() == VIRTICAL)
+	{
+		if ((row + 1) > MAX_ROW - 1)
+		{
+			currentControlPad.row = (row + 1) % MAX_ROW;
+		}
+		else
+		{
+			currentControlPad.row = row + 1;
+		}
+	}
+	else
+	{
+		if ((column + 1) > MAX_COLUMN)
+		{
+			currentControlPad.column = (column + 1) % MAX_COLUMN;
+		}
+		else
+		{
+			currentControlPad.column = column + 1;
+		}
+	}
+}
+
+//在制定的行列写入数据
+//参数：
+//row：指定的行
+//column：指定的列
+//data：写入的数据
+//返回值：空
+void Nokia5110::Draw(unsigned char row, unsigned char column,
+		unsigned char data)
+{
+	SetColumn(column);
+	SetRow(row);
+	sendData(data);
+
+	UpdateCurrentRowAndColumn(row, column);
+
+}
+
+/*
 void Nokia5110::drawDot(unsigned char x, unsigned char y,
 		NOKIA_DISPLAY_WRITE_MODE mode)
 {
@@ -342,6 +393,7 @@ void Nokia5110::drawDot(unsigned char x, unsigned char y,
 
   draw (x, bytes, data);
 }
+ */
 
 unsigned char * Nokia5110::GetCurrentOfByte() const
 {
