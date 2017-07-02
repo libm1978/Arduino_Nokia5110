@@ -112,36 +112,50 @@ void Nokia5110::Reset()
 	digitalWrite(m_reset, HIGH);
 }
 
-//功能：根据用户指定的X坐标改变Nokia5110的当前column
+//功能：将指定的列改变Nokia5110的当前列
 //参数：
-//x：用户指定的X坐标，类型：unsigned char
+//column：用户指定的列，类型：unsigned char
 //返回值：无
-void Nokia5110::setColumn (unsigned char x)
+void Nokia5110::setColumn (unsigned char column)
 {
-  if (x > 83)
+  if (column > MAX_COLUMN-1)
 	  {
-      x = x % 84;
+	  	  column = column % MAX_COLUMN;
 	  }
 	currentControlPad.column = 0x80;
-  currentControlPad.column |= x;
+	currentControlPad.column |= column;
 	sendCommand(currentControlPad.column);
 }
 
-//功能：根据用户指定的Y坐标改变Nokia5110的当前ROW
-//参数：
-//y：用户指定的Y坐标
-//返回值：无
-void Nokia5110::setRow (unsigned char y)
+//功能：获取Nokia5110的当前列
+//参数：无
+//返回值：Nokia5110的当前列
+unsigned char Nokia5110::getColumn()
 {
-  if (y > (MAX_ROW * 8))
+	return currentControlPad.column&0x7f;
+}
+//功能：根据用户指定的行改变Nokia5110的当前行
+//参数：
+//row：用户指定的行
+//返回值：无
+void Nokia5110::setRow (unsigned char row)
+{
+  if (row > (MAX_ROW -1))
 	  {
-      y = y % MAX_ROW;
+      row = row % MAX_ROW;
 	  }
 	currentControlPad.row = 0x40;
-  currentControlPad.row |= y;
+    currentControlPad.row |= row;
 	sendCommand(currentControlPad.row);
 }
 
+//功能：获取Nokia5110的当前行
+//参数：无
+//返回值：Nokia5110的当前行
+unsigned char Nokia5110::getRow()
+{
+	return currentControlPad.row&0x3f;
+}
 //功能：设置Nokia5110的工作模式
 //参数：
 //s：指定的Nokia5110的状态，类型：NOKIA_SWITCH_STAT
@@ -292,10 +306,12 @@ void Nokia5110::OffLED()
 {
 	digitalWrite(m_led,HIGH);
 }
-void Nokia5110::draw(unsigned char x,unsigned char y,unsigned char data)
+
+void Nokia5110::draw(unsigned char row,unsigned char column,unsigned char data)
 {
-	setColumn(x);
-	setRow(y);
+	currentControlPad.row=row;
+	currentControlPad.column=column;
+
 	sendData(data);
 }
 

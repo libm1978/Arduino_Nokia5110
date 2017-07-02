@@ -105,8 +105,10 @@ private:
 	void controlPad_Init();
 	void sendCommand(unsigned char cmd);
 	void sendData(unsigned char data);
-	void setColumn (unsigned char x);
-	void setRow (unsigned char y);
+	void setColumn (unsigned char column);
+	unsigned char getColumn();
+	void setRow (unsigned char row);
+	unsigned char getRow();
 	void draw(unsigned char row, unsigned char column, unsigned char data);
 public:
 	Nokia5110(unsigned char resetPin,unsigned char dcPin,unsigned char sclkPin,unsigned char mosiPin,unsigned char ssPin,unsigned char ledPin);
