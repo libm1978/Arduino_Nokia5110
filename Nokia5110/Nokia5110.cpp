@@ -66,8 +66,8 @@ void Nokia5110::controlPad_Init()
 	currentControlPad.spiSettings.dataMode = SPI_MODE0;
 	currentControlPad.enableFunctions = 0x20;
 	currentControlPad.displayMode = 0x08;
-	currentControlPad.column = 0x80;
-	currentControlPad.row = 0x40;
+	currentControlPad.column = 0;
+	currentControlPad.row = 0;
 }
 
 //功能：向Nokia5110模块发送指定的命令
@@ -122,9 +122,9 @@ void Nokia5110::SetColumn(unsigned char column)
 	  {
 	  	  column = column % MAX_COLUMN;
 	  }
-	currentControlPad.column = 0x80;
-	currentControlPad.column |= column;
-	sendCommand(currentControlPad.column);
+	//currentControlPad.column = 0x80;
+	currentControlPad.column = column;
+	sendCommand(currentControlPad.column|0x80);
 }
 
 //功能：获取Nokia5110的当前列
@@ -132,7 +132,7 @@ void Nokia5110::SetColumn(unsigned char column)
 //返回值：Nokia5110的当前列
 unsigned char Nokia5110::GetColumn() const
 {
-	return currentControlPad.column&0x7f;
+	return currentControlPad.column;
 }
 //功能：根据用户指定的行改变Nokia5110的当前行
 //参数：
@@ -144,9 +144,9 @@ void Nokia5110::SetRow(unsigned char row)
 	  {
       row = row % MAX_ROW;
 	  }
-	currentControlPad.row = 0x40;
-    currentControlPad.row |= row;
-	sendCommand(currentControlPad.row);
+	//currentControlPad.row = 0x40;
+    currentControlPad.row = row;
+	sendCommand(currentControlPad.row|0x40);
 }
 
 //功能：获取Nokia5110的当前行
@@ -154,7 +154,7 @@ void Nokia5110::SetRow(unsigned char row)
 //返回值：Nokia5110的当前行
 unsigned char Nokia5110::GetRow() const
 {
-	return currentControlPad.row&0x3f;
+	return currentControlPad.row;
 }
 //功能：设置Nokia5110的工作模式
 //参数：
@@ -401,18 +401,20 @@ unsigned char * Nokia5110::GetCurrentOfByte() const
       + currentControlPad.column;
 }
 
-void Nokia5110::Refresh(unsigned char x, unsigned char y, unsigned char width,
+void Nokia5110::Refresh(unsigned char row, unsigned char column, unsigned char width,
 		    unsigned char high)
 {
   if (GetDisplayDirection () == HORIZONTAL)
     {
-      m_pCurrentOfBuffer = m_buffer + y * MAX_COLUMN + x;
-      for (unsigned char row = 0; row < high; row++)
+      SetRow(row);
+      SetColumn(column);
+      for (unsigned char r = 0; r < high; r++)
 	{
-	  for (unsigned char column = 0; column < width; column++)
+	  for (unsigned char c = 0; c < width; c++)
 	    {
-	      m_pCurrentOfBuffer = m_buffer + row * MAX_COLUMN + column;
+	      m_pCurrentOfBuffer =GetCurrentOfByte();
 	      sendData (*m_pCurrentOfBuffer);
+	      UpdateCurrentRowAndColumn(r,c);
 	    }
 	}
     }

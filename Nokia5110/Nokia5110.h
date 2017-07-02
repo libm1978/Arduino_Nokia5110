@@ -128,7 +128,7 @@ public:
 	void Draw(unsigned char row, unsigned char column, unsigned char data);
 	//void drawDot(unsigned char x, unsigned char y,NOKIA_DISPLAY_WRITE_MODE mode);
 	unsigned char * GetCurrentOfByte () const;
-	void Refresh(unsigned char x = 0, unsigned char y = 0, unsigned char width =
+	void Refresh(unsigned char row = 0, unsigned char column = 0, unsigned char width =
 			MAX_COLUMN, unsigned char high = MAX_ROW);
   ~Nokia5110 ();
 };
