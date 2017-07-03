@@ -12,7 +12,7 @@ void setup()
 	//led.switchLED();
 	led.Reset();
 	led.OnLED();
-	led.SetAvaliable(ON);
+	led.PowerOn();
 	led.SetDisplayMode(DISPLAY_NORMAL);
 	led.SetDisplayDirection(VIRTICAL);
 	led.SetInstructSet(BASE_INSTRUCT);

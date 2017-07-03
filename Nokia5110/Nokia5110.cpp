@@ -156,28 +156,30 @@ unsigned char Nokia5110::GetRow() const
 {
 	return currentControlPad.row;
 }
-//功能：设置Nokia5110的工作模式
-//参数：
-//s：指定的Nokia5110的状态，类型：NOKIA_SWITCH_STAT
+
+//功能：将Nokia5110设置为上电模式
+//参数：无
 //返回值：无
-void Nokia5110::SetAvaliable(NOKIA_SWITCH_STAT s)
+void Nokia5110::PowerOn()
 {
-	  if(s==OFF)
-	  {
-		bitSet(currentControlPad.enableFunctions, 2);
-	  }
-	  else
-	  {
-		bitClear(currentControlPad.enableFunctions, 2);
-	  }
-	  sendCommand(currentControlPad.enableFunctions);
+	bitClear(currentControlPad.enableFunctions, 2);
+	sendCommand(currentControlPad.enableFunctions);
+}
+
+//功能：将Nokia5110设置为掉电模式
+//参数：无
+//返回值：无
+void Nokia5110::PowerDown()
+{
+	bitSet(currentControlPad.enableFunctions, 2);
+	sendCommand(currentControlPad.enableFunctions);
 }
 
 //功能：获取Nokia5110的工作模式
 //参数：无
 //返回值：NOKIA_SWITCH_STAT类型，返回ON表示Nokia5110处于正常的工作状态，返回OFF表示Nokia5110处于掉电模式
-NOKIA_SWITCH_STAT Nokia5110::GetAvaliable() const {
-	return (bitRead(currentControlPad.enableFunctions, 2)) == 0 ? ON : OFF;
+NOKIA_POWER_STAT Nokia5110::GetPowerStat() const {
+	return (bitRead(currentControlPad.enableFunctions, 2)) == 0 ? POWER_ON : POWER_DOWN;
 }
 
 //功能：设置Nokia5110的显示模式
@@ -348,7 +350,7 @@ void Nokia5110::UpdateCurrentRowAndColumn(unsigned char row,
 	}
 }
 
-//在制定的行列写入数据
+//在指定的行列写入数据
 //参数：
 //row：指定的行
 //column：指定的列
@@ -364,36 +366,6 @@ void Nokia5110::Draw(unsigned char row, unsigned char column,
 	UpdateCurrentRowAndColumn(row, column);
 
 }
-
-/*
-void Nokia5110::drawDot(unsigned char x, unsigned char y,
-		NOKIA_DISPLAY_WRITE_MODE mode)
-{
-  unsigned char bytes = y / 8;
-  unsigned char bit = y % 8;
-  unsigned char data = 0;
-	unsigned char bdata = 0;
-  bitSet(data, bit);
-  if (bytes > 5)
-    bytes %= 6;
-  if (x > 83)
-    x %= 84;
-	bdata = *(m_buffer + bytes * 84 + x);
-	switch (mode) {
-	case AND:
-		data &= bdata;
-		break;
-	case OR:
-		data |= bdata;
-		break;
-	case XOR:
-		data ^= bdata;
-		break;
-	}
-
-  draw (x, bytes, data);
-}
- */
 
 unsigned char * Nokia5110::GetCurrentOfByte() const
 {

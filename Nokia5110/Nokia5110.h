@@ -14,9 +14,9 @@
 //代表Nokia5110的活动状态
 typedef enum
 {
-   ON,//工作模式
-   OFF//掉电模式
-}NOKIA_SWITCH_STAT;
+   POWER_ON,//工作模式
+   POWER_DOWN//掉电模式
+}NOKIA_POWER_STAT;
 
 //用于指定向Nokia5110显示数据缓存中写入数据时的操作模式
 typedef enum {
@@ -112,8 +112,9 @@ public:
 	void OnLED();
 	void OffLED();
 	void Reset();
-	void SetAvaliable(NOKIA_SWITCH_STAT s);
-	NOKIA_SWITCH_STAT GetAvaliable() const;
+	void PowerOn();
+	void PowerDown();
+	NOKIA_POWER_STAT GetPowerStat() const;
 	void SetDisplayMode(NOKIA_DISPLAY_MODE m);
 	NOKIA_DISPLAY_MODE GetDisplayMode() const;
 	void SetDisplayDirection(NOKIA_DISPLAY_DIRECTION d);
