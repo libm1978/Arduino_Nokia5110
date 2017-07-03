@@ -9,7 +9,7 @@
 #define NOKIA5110_H_
 
 #include <Arduino.h>
-#include <SPI.h>
+//#include <SPI.h>
 
 //代表Nokia5110的活动状态
 typedef enum
@@ -17,14 +17,6 @@ typedef enum
    POWER_ON,//工作模式
    POWER_DOWN//掉电模式
 }NOKIA_POWER_STAT;
-
-//用于指定向Nokia5110显示数据缓存中写入数据时的操作模式
-typedef enum {
-	NOT,
-	AND,
-	OR,
-	XOR
-} NOKIA_DISPLAY_WRITE_MODE;
 
 //用于指定Nokia5110显示模式
 typedef enum
@@ -50,24 +42,21 @@ typedef enum
 }NOKIA_INSTRUCT_SET;
 
 
-
+//用于表示SPI的基本通讯设置，参考Arduino的SPI库
+typedef struct
+{
+  unsigned char speed;//数据传输速度
+  unsigned char bitOrder;//数据传输顺序
+  unsigned char dataMode;//数据传输模式
+}Nokia_SPI_Settings;
 
 
 class Nokia5110
 {
 private:
-	//用于表示SPI的基本通讯设置，参考Arduino的SPI库
-	typedef struct
-	{
-	  unsigned char speed;//数据传输速度
-	  unsigned char bitOrder;//数据传输顺序
-	  unsigned char dataMode;//数据传输模式
-	}Nokia_SPI_Settings;
-
 	//用于定义Nokia5110的控制寄存器中数据缓存
 	typedef struct
   {
-
 		Nokia_SPI_Settings spiSettings;//SPI通讯的基本设置
 		unsigned char enableFunctions;//Nokia5110的功能控制寄存器
 		unsigned char displayMode;//Nokia5110的显示模式寄存器
@@ -80,6 +69,14 @@ private:
 	//Nokia5110的最大行数常量
 	static const unsigned char MAX_ROW = 6;
 
+
+	//Nokia5110的控制寄存器对象内缓存
+	Nokia5110_ControlPad currentControlPad;
+
+	void controlPad_Init();
+	void UpdateCurrentRowAndColumn(unsigned char row, unsigned char column);
+
+protected:
 	//Reset引脚
 	unsigned char m_reset;
 	//数据命令切换引脚
@@ -92,25 +89,16 @@ private:
 	unsigned char m_sclk;
 	//SPI通讯数据传输引脚
 	unsigned char m_mosi;
-	//Nokia5110显示缓存的对象内缓存区
-	unsigned char * m_buffer;
-	//Nokia5110显示缓存内当前字节指针
-	unsigned char *m_pCurrentOfBuffer;
 
-	//Nokia5110的控制寄存器对象内缓存
-	Nokia5110_ControlPad currentControlPad;
-
-	void pin_Init();
-	void spi_Init();
-	void controlPad_Init();
-	void sendCommand(unsigned char cmd);
-	void sendData(unsigned char data);
-	void UpdateCurrentRowAndColumn(unsigned char row, unsigned char column);
+	virtual void pin_Init();
+	virtual void spi_Init();
+	virtual void sendCommand(unsigned char cmd);
+	virtual void sendData(unsigned char data);
 
 public:
 	Nokia5110(unsigned char resetPin,unsigned char dcPin,unsigned char sclkPin,unsigned char mosiPin,unsigned char ssPin,unsigned char ledPin);
-	void OnLED();
-	void OffLED();
+	void BacklightOn();
+	void BacklightOff();
 	void Reset();
 	void PowerOn();
 	void PowerDown();
@@ -127,14 +115,7 @@ public:
 	unsigned char GetRow() const;
 	void Draw(unsigned char data);
 	void Draw(unsigned char row, unsigned char column, unsigned char data);
-	//void drawDot(unsigned char x, unsigned char y,NOKIA_DISPLAY_WRITE_MODE mode);
-	unsigned char * GetCurrentOfByte () const;
-	void Refresh(unsigned char row = 0, unsigned char column = 0, unsigned char width =
-			MAX_COLUMN, unsigned char high = MAX_ROW);
-  ~Nokia5110 ();
+	virtual ~Nokia5110 ();
 };
-
-
-
 
 #endif /* NOKIA5110_H_ */

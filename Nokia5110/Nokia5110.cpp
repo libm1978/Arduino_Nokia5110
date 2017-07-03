@@ -24,8 +24,6 @@ Nokia5110::Nokia5110(unsigned char restPin,unsigned char dcPin,unsigned char scl
 	pin_Init();
 	controlPad_Init();
 	spi_Init();
-	m_buffer = new unsigned char[MAX_ROW * MAX_COLUMN];
-	m_pCurrentOfBuffer = m_buffer;
 }
 
 //功能：初始化使用构造函数指定的Arduino引脚
@@ -290,13 +288,12 @@ NOKIA_INSTRUCT_SET Nokia5110::GetInstructSet()const
 //功能：Nokia5110对象的析构函数，清除对象占用的资源
 Nokia5110::~Nokia5110 ()
 {
-  delete[] m_buffer;
 }
 
 //功能：打开Nokia5110模块的背光LED
 //参数：无
 //返回值：无
-void Nokia5110::OnLED()
+void Nokia5110::BacklightOn()
 {
 	digitalWrite(m_led,LOW);
 }
@@ -304,7 +301,7 @@ void Nokia5110::OnLED()
 //功能：关闭Nokia5110模块的背光LED
 //参数：无
 //返回值：无
-void Nokia5110::OffLED()
+void Nokia5110::BacklightOff()
 {
 	digitalWrite(m_led,HIGH);
 }
@@ -365,30 +362,5 @@ void Nokia5110::Draw(unsigned char row, unsigned char column,
 
 	UpdateCurrentRowAndColumn(row, column);
 
-}
-
-unsigned char * Nokia5110::GetCurrentOfByte() const
-{
-  return m_buffer + currentControlPad.row * MAX_COLUMN
-      + currentControlPad.column;
-}
-
-void Nokia5110::Refresh(unsigned char row, unsigned char column, unsigned char width,
-		    unsigned char high)
-{
-  if (GetDisplayDirection () == HORIZONTAL)
-    {
-      SetRow(row);
-      SetColumn(column);
-      for (unsigned char r = 0; r < high; r++)
-	{
-	  for (unsigned char c = 0; c < width; c++)
-	    {
-	      m_pCurrentOfBuffer =GetCurrentOfByte();
-	      sendData (*m_pCurrentOfBuffer);
-	      UpdateCurrentRowAndColumn(r,c);
-	    }
-	}
-    }
 }
 

@@ -9,9 +9,8 @@ Nokia5110 led(7,8,0,0,10,9);
 unsigned char count = 0;
 void setup()
 {
-	//led.switchLED();
 	led.Reset();
-	led.OnLED();
+	led.BacklightOn();
 	led.PowerOn();
 	led.SetDisplayMode(DISPLAY_NORMAL);
 	led.SetDisplayDirection(VIRTICAL);
