@@ -9,7 +9,6 @@
 #define NOKIA5110_H_
 
 #include <Arduino.h>
-//#include <SPI.h>
 
 //代表Nokia5110的活动状态
 typedef enum
