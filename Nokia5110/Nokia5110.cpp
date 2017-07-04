@@ -2,6 +2,7 @@
 #include <SPI.h>
 #include "Nokia5110.h"
 
+
 //功能：Nokia5110对象的构造函数
 //参数:
 //restPin:复位引脚
