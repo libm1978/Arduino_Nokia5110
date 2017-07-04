@@ -1,7 +1,7 @@
 /*
  * Nokia5110.h
  *
- *  Created on: 2017锟斤拷6锟斤拷15锟斤拷
+ *  Created on: 2017年6月15日
  *      Author: li
  */
 
@@ -9,6 +9,7 @@
 #define NOKIA5110_H_
 
 #include <Arduino.h>
+#include "SPITransfer.h"
 
 //代表Nokia5110的活动状态
 typedef enum
@@ -42,12 +43,12 @@ typedef enum
 
 
 //用于表示SPI的基本通讯设置，参考Arduino的SPI库
-typedef struct
-{
-  unsigned char speed;//数据传输速度
-  unsigned char bitOrder;//数据传输顺序
-  unsigned char dataMode;//数据传输模式
-}Nokia_SPI_Settings;
+//typedef struct
+//{
+//  unsigned char speed;//数据传输速度
+//  unsigned char bitOrder;//数据传输顺序
+//  unsigned char dataMode;//数据传输模式
+//}Nokia_SPI_Settings;
 
 
 class Nokia5110
@@ -56,7 +57,7 @@ private:
 	//用于定义Nokia5110的控制寄存器中数据缓存
 	typedef struct
   {
-		Nokia_SPI_Settings spiSettings;//SPI通讯的基本设置
+//		Nokia_SPI_Settings spiSettings;//SPI通讯的基本设置
 		unsigned char enableFunctions;//Nokia5110的功能控制寄存器
 		unsigned char displayMode;//Nokia5110的显示模式寄存器
 		unsigned char column;//Nokia5110当前的列
@@ -68,9 +69,11 @@ private:
 	//Nokia5110的最大行数常量
 	static const unsigned char MAX_ROW = 6;
 
-
+	SPITransfer spiTransfer;
 	//Nokia5110的控制寄存器对象内缓存
 	Nokia5110_ControlPad currentControlPad;
+
+
 
 	void controlPad_Init();
 	void UpdateCurrentRowAndColumn(unsigned char row, unsigned char column);
@@ -85,9 +88,9 @@ protected:
 	//SPI从机使能引脚
 	unsigned char m_ss;
 	//SPI通讯时钟引脚
-	unsigned char m_sclk;
+//	unsigned char m_sclk;
 	//SPI通讯数据传输引脚
-	unsigned char m_mosi;
+//	unsigned char m_mosi;
 
 	virtual void pin_Init();
 	virtual void spi_Init();
@@ -95,7 +98,7 @@ protected:
 	virtual void sendData(unsigned char data);
 
 public:
-	Nokia5110(unsigned char resetPin,unsigned char dcPin,unsigned char sclkPin,unsigned char mosiPin,unsigned char ssPin,unsigned char ledPin);
+	Nokia5110(unsigned char resetPin,unsigned char dcPin,unsigned char ssPin,unsigned char ledPin,SPITransfer transfer);
 	void BacklightOn();
 	void BacklightOff();
 	void Reset();
