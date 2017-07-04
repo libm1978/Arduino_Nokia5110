@@ -1,12 +1,27 @@
 /*
  * main.cpp
  *
- *  Created on: 2017ï¿½ï¿½6ï¿½ï¿½15ï¿½ï¿½
+ *  Created on: 2017Äê6ÔÂ15ÈÕ
  *      Author: li
  */
+#include <SPI.h>
+#include "SPITransfer.h"
 #include "Nokia5110.h"
-Nokia5110 led(7,8,0,0,10,9);
+
+void spi_init()
+{
+	SPI.beginTransaction(SPISettings(1000,MSBFIRST,SPI_MODE0));
+}
+
+unsigned char spi_transfer(unsigned char data)
+{
+	return SPI.transfer(data);
+}
+SPITransfer transfer(spi_init,spi_transfer,SPI.begin,SPI.end);
+
+Nokia5110 led(7,8,10,9,transfer);
 unsigned char count = 0;
+
 void setup()
 {
 	led.Reset();
