@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include <SPI.h>
+#include "SPITransfer.h"
 #include "Nokia5110.h"
 
 
@@ -12,15 +12,16 @@
 //ssPin:SPI接口的从机使能SS引脚
 //ledPin:Nokia5110背光LED控制引脚
 //返回值：无
-Nokia5110::Nokia5110(unsigned char restPin,unsigned char dcPin,unsigned char sclkPin,unsigned char mosiPin,
-		unsigned char ssPin,unsigned char ledPin)
+Nokia5110::Nokia5110(unsigned char restPin,unsigned char dcPin,
+		unsigned char ssPin,unsigned char ledPin,SPITransfer transfer)
 {
 	m_reset=restPin;
 	m_dc=dcPin;
-	m_sclk=sclkPin;
-	m_mosi=mosiPin;
+//	m_sclk=sclkPin;
+//	m_mosi=mosiPin;
 	m_ss=ssPin;
 	m_led=ledPin;
+	spiTransfer=transfer;
 
 	pin_Init();
 	controlPad_Init();
@@ -51,7 +52,8 @@ void Nokia5110::pin_Init()
 //备注：类的私有方法
 void Nokia5110::spi_Init()
 {
-	SPI.beginTransaction(SPISettings(currentControlPad.spiSettings.speed,currentControlPad.spiSettings.bitOrder,currentControlPad.spiSettings.dataMode));
+//	SPI.beginTransaction(SPISettings(currentControlPad.spiSettings.speed,currentControlPad.spiSettings.bitOrder,currentControlPad.spiSettings.dataMode));
+			spiTransfer.Init();
 }
 
 //功能：初始化Nokia5110模块的控制寄存器的类内缓存
@@ -60,9 +62,9 @@ void Nokia5110::spi_Init()
 //备注：类的私有方法
 void Nokia5110::controlPad_Init()
 {
-	currentControlPad.spiSettings.speed = 1000;
-	currentControlPad.spiSettings.bitOrder = MSBFIRST;
-	currentControlPad.spiSettings.dataMode = SPI_MODE0;
+//	currentControlPad.spiSettings.speed = 1000;
+//	currentControlPad.spiSettings.bitOrder = MSBFIRST;
+//	currentControlPad.spiSettings.dataMode = SPI_MODE0;
 	currentControlPad.enableFunctions = 0x20;
 	currentControlPad.displayMode = 0x08;
 	currentControlPad.column = 0;
@@ -77,12 +79,12 @@ void Nokia5110::controlPad_Init()
 void Nokia5110::sendCommand(unsigned char cmd)
 {
 	  digitalWrite(m_dc,LOW);
-	  SPI.begin();
+	  spiTransfer.Begin();
 	  digitalWrite(m_ss,LOW);
-	  SPI.transfer(cmd);
+	  spiTransfer.Transfer(cmd);
 	  digitalWrite(m_ss,HIGH);
 	  digitalWrite(m_dc,HIGH);
-	  SPI.end();
+	  spiTransfer.End();
 }
 
 //功能：向Nokia5110模块当前位置发送显示数据
@@ -93,11 +95,11 @@ void Nokia5110::sendCommand(unsigned char cmd)
 void Nokia5110::sendData(unsigned char data)
 {
 	  digitalWrite(m_dc,HIGH);
-	  SPI.begin();
+	  spiTransfer.Begin();
 	  digitalWrite(m_ss,LOW);
-	  SPI.transfer(data);
+	  spiTransfer.Transfer(data);
 	  digitalWrite(m_ss,HIGH);
-	  SPI.end();
+	  spiTransfer.End();
 }
 
 
