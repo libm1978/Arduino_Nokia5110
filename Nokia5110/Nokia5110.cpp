@@ -298,7 +298,7 @@ Nokia5110::~Nokia5110 ()
 //返回值：无
 void Nokia5110::BacklightOn()
 {
-	digitalWrite(m_led,LOW);
+	digitalWrite(m_led, HIGH);
 }
 
 //功能：关闭Nokia5110模块的背光LED
@@ -306,7 +306,7 @@ void Nokia5110::BacklightOn()
 //返回值：无
 void Nokia5110::BacklightOff()
 {
-	digitalWrite(m_led,HIGH);
+	digitalWrite(m_led, LOW);
 }
 
 //功能：在当前的行列位置写入数据
