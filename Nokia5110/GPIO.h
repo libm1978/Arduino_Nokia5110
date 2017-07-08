@@ -8,7 +8,14 @@
 #ifndef GPIO_H_
 #define GPIO_H_
 
-
+class GPIO
+{
+public:
+	virtual void Init();
+	virtual void Set();
+	virtual unsigned char Get();
+	virtual ~GPIO();
+};
 
 
 
